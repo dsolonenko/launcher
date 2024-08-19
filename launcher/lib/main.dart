@@ -1,39 +1,46 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'main.g.dart';
-
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
-@riverpod
-String helloWorld(HelloWorldRef ref) {
-  return 'Hello world';
-}
+import 'package:launcher/home.dart';
+import 'package:system_date_time_format/system_date_time_format.dart';
 
 void main() {
   runApp(
     ProviderScope(
-      child: MyApp(),
+      child: SDTFScope(
+        child: MyApp(),
+      ),
     ),
   );
 }
 
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomePage(),
+    ),
+  ],
+);
+
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // We can use hooks inside HookConsumerWidget
-    final counter = useState(0);
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'tLauncher',
+      theme: _buildTheme(FlexThemeData.light(scheme: FlexScheme.mandyRed)),
+      darkTheme: _buildTheme(FlexThemeData.dark(scheme: FlexScheme.mandyRed)),
+      themeMode: ThemeMode.system,
+      routerConfig: _router,
+    );
+  }
 
-    final String value = ref.watch(helloWorldProvider);
-
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Example')),
-        body: Center(
-          child: Text('$value ${counter.value}'),
-        ),
+  _buildTheme(ThemeData themeData) {
+    return themeData.copyWith(
+      textTheme: themeData.textTheme.apply(
+        fontFamily: 'RobotoCondensed',
       ),
     );
   }

@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  system_date_time_format
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
